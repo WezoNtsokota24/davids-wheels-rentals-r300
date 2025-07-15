@@ -1,7 +1,39 @@
 import { Button } from "@/components/ui/button";
-import { Car, Phone } from "lucide-react";
+import { Car, Phone, User, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
+  const { user, signOut, loading } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Signed out",
+        description: "You have been successfully signed out.",
+      });
+      navigate('/');
+    }
+  };
+
   return (
     <header className="bg-background border-b border-border sticky top-0 z-50 backdrop-blur-sm bg-background/95">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -30,9 +62,43 @@ const Header = () => {
             <Phone className="h-4 w-4" />
             <span>+27 64 416 2558</span>
           </a>
-          <Button variant="accent" size="sm">
-            Book Now
-          </Button>
+          
+          {!loading && (
+            user ? (
+              <div className="flex items-center gap-2">
+                <Button variant="accent" size="sm">
+                  Book Now
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      <span className="hidden sm:inline">Account</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>
+                      {user.email}
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" onClick={() => navigate('/auth')}>
+                  Sign In
+                </Button>
+                <Button variant="accent" size="sm" onClick={() => navigate('/auth')}>
+                  Get Started
+                </Button>
+              </div>
+            )
+          )}
         </div>
       </div>
     </header>
