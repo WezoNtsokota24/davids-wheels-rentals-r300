@@ -26,9 +26,9 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-3">
-          <a href="tel:+27123456789" className="hidden sm:flex items-center gap-2 text-foreground hover:text-primary">
+          <a href="tel:+27644162558" className="hidden sm:flex items-center gap-2 text-foreground hover:text-primary">
             <Phone className="h-4 w-4" />
-            <span>+27 12 345 6789</span>
+            <span>+27 64 416 2558</span>
           </a>
           <Button variant="accent" size="sm">
             Book Now
